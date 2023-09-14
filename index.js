@@ -12,14 +12,7 @@ const app = express();
 require('./config/passport')(passport);
 
 //------------ DB Configuration ------------//
-// const db = require('./config/key').MongoURI;
-
-mongoose.connect('mongodb://127.0.0.1:27017/Nodejs-Auth');
-const db = mongoose.connection;
-db.on('error',console.error.bind(console,"Error connecting to MongoDB"));
-db.once('open',function(){
-    console.log("Connected to Database :: MongoDB");
-});
+const db = require('./config/key').MongoURI;
 
 //------------ EJS Configuration ------------//
 app.use(expressLayouts);
