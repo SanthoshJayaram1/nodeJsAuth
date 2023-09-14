@@ -1,6 +1,6 @@
 const express = require('express');
 require('dotenv').config();
-const {port} = process.env;
+const {PORT} = process.env;
 const expressLayouts = require('express-ejs-layouts');
 const mongoose = require('mongoose');
 const flash = require('connect-flash');
@@ -54,10 +54,10 @@ app.use('/auth', require('./routes/auth'));
 
 
 
-app.listen(port || 5000, function(err){
+app.listen(PORT || 5000, function(err){
     if (err){
         console.log(`Error in running the server: ${err}`);
     }
 
-    console.log(`Server is running on port: ${port}`);
+    console.log(`Server is running on port: ${PORT}`);
 });
