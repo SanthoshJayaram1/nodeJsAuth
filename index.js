@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const flash = require('connect-flash');
 const session = require('express-session');
 const passport = require('passport');
+const connectWithDb = require('./config/key');
 
 const app = express();
 
@@ -12,7 +13,8 @@ const app = express();
 require('./config/passport')(passport);
 
 //------------ DB Configuration ------------//
-const db = require('./config/key').MongoURI;
+// const db = require('./config/key').MongoURI;
+connectWithDb();
 
 //------------ EJS Configuration ------------//
 app.use(expressLayouts);
