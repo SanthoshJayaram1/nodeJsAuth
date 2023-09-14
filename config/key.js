@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
-const url="mongodb+srv://user2003:user2003@cluster0.atkywud.mongodb.net/?retryWrites=true&w=majority";
+const url = process.env.PS_DB_URI;
+
 const connectWithDb = () => {
     try{
         mongoose.connect(url,{useUnifiedTopology:true,useNewUrlParser:true});
