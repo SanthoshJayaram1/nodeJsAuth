@@ -19,10 +19,10 @@ router.post('/register', authController.registerHandle);     //------>2. this su
 router.get('/activate/:token', authController.activateHandle);//----->3. this verify the user and create credentials in database
 
 // user forgot password
-router.get('/forgot', (req, res) => res.render('forgot1'));  //------>1. we got to forgot password page and enter email
-router.post('/forgot', authController.forgotPassword);      //------->2. we submit the email, then one token is generated and link one link sent through mail
-router.get('/forgot/:token', authController.gotoReset);    //-------->3. we click on this link then it verify the token and redirect to reset password page
-router.get('/reset/:id',authController.handleForgetPassword);//------>4. here we verify params id and then changes password in database
+router.get('/forgot', (req, res) => res.render('forgot1'));  //------>1. this renders forgot password page and enter email
+router.post('/forgot', authController.forgotPassword);      //------->2. this submit the email, then one token is generated and link one link sent through mail
+router.get('/forgot/:token', authController.gotoReset);    //-------->3. on clicking this link , it verify the token and redirect to reset password page
+router.get('/reset/:id',authController.handleForgetPassword);//------>4. here it  verify params id and then changes password in database
 
 //user reset routes
 router.get('/reset/',ensureAuthenticated,(req,res)=>res.render('reset1'));//-->1. this is reset password option after logging in
