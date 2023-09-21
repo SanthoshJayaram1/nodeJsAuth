@@ -10,8 +10,21 @@ const JWT_RESET_KEY = "jwtreset987";
 // User Model 
 const User = require('../models/User');
 
-// Register Handle 
-exports.registerHandle = (req, res) => {
+//<----------------------------------------------------------- Login controllers---------------------------------------------->//
+
+// login handle
+exports.loginHandlePage=async(req,res)=>{
+    if(req.user){
+     res.redirect('/dashboard');
+    }else{
+     res.render('login1');
+    }
+ }
+
+//<---------------------------------------------- registration and user activation controllers----------------------------->//
+
+ // registerhandle
+ exports.registerHandle = (req, res) => {
     const { name, email, password, password2 } = req.body;
     let errors = [];
 
@@ -63,8 +76,9 @@ exports.registerHandle = (req, res) => {
                 oauth2Client.setCredentials({
                     refresh_token: "1//04T_nqlj9UVrVCgYIARAAGAQSNwF-L9IrGm-NOdEKBOakzMn1cbbCHgg2ivkad3Q_hMyBkSQen0b5ABfR8kPR18aOoqhRrSlPm9w"
                 });
+                // generate the access token
                 const accessToken = oauth2Client.getAccessToken()
-
+                
                 const token = jwt.sign({ name, email, password }, JWT_KEY, { expiresIn: '30m' });
                 const CLIENT_URL = 'http://' + req.headers.host;
 
@@ -118,12 +132,12 @@ exports.registerHandle = (req, res) => {
         });
     }
 }
-
 // Activate Account Handle 
 exports.activateHandle = (req, res) => {
     const token = req.params.token;
     let errors = [];
     if (token) {
+        // here we decode the token we sent before through mail
         jwt.verify(token, JWT_KEY, (err, decodedToken) => {
             if (err) {
                 req.flash(
@@ -133,22 +147,25 @@ exports.activateHandle = (req, res) => {
                 res.redirect('/auth/register');
             }
             else {
+                // extract user details from the decoded token
                 const { name, email, password } = decodedToken;
+                // then checks in database whether user already exists or not
                 User.findOne({ email: email }).then(user => {
                     if (user) {
-                        // User already exists 
+                        // if User already exists 
                         req.flash(
                             'error_msg',
                             'Email ID already registered! Please log in.'
                         );
                         res.redirect('/auth/login');
                     } else {
+                        // if doesnot exist, then creates new user
                         const newUser = new User({
                             name,
                             email,
                             password
                         });
-
+                           // encrypt the password to hash and then save it to database
                         bcryptjs.genSalt(10, (err, salt) => {
                             bcryptjs.hash(newUser.password, salt, (err, hash) => {
                                 if (err) throw err;
@@ -176,6 +193,8 @@ exports.activateHandle = (req, res) => {
     }
 }
 
+//<---------------------------------------------------forgot password controllers-------------------------------------------->//
+
 // Forgot Password Handle 
 exports.forgotPassword = (req, res) => {
     const { email } = req.body;
@@ -195,7 +214,7 @@ exports.forgotPassword = (req, res) => {
     } else {
         User.findOne({ email: email }).then(user => {
             if (!user) {
-                // User already exists 
+                // if User already exists 
                 errors.push({ msg: 'User with Email ID does not exist!' });
                 res.render('forgot', {
                     errors,
@@ -271,7 +290,6 @@ exports.forgotPassword = (req, res) => {
                         })
                     }
                 })
-
             }
         });
     }
@@ -280,7 +298,6 @@ exports.forgotPassword = (req, res) => {
 // Redirect to Reset Handle 
 exports.gotoReset = (req, res) => {
     const { token } = req.params;
-
     if (token) {
         jwt.verify(token, JWT_RESET_KEY, (err, decodedToken) => {
             if (err) {
@@ -288,7 +305,11 @@ exports.gotoReset = (req, res) => {
                     'error_msg',
                     'Incorrect or expired link! Please try again.'
                 );
-                res.redirect('/auth/login');
+                if(req.user){
+                    res.redirect('/');
+                }else{
+                    res.redirect('/auth/login');
+                }
             }
             else {
                 const { _id } = decodedToken;
@@ -311,13 +332,25 @@ exports.gotoReset = (req, res) => {
         console.log("Password reset error!")
     }
 }
+// handleforgotpassword
+exports.handleForgetPassword=async(req,res)=>{
+    const id=req.params.id;
+    try{
+        const user=await User.findById(id);
+        if(user){
+            res.render("reset1");
+         }
+    }catch(error){
+        res.redirect('/auth/login');
+    }
+}
 
-
-exports.resetPassword = (req, res) => {
-    var { password, password2 } = req.body;
-    const id = req.params.id;
+// resetpassword Handle
+exports.resetPassword = async(req, res) => {
+    var { email,password, password2 } = req.body;
     let errors = [];
-
+    const user=await User.findOne({email:email});
+    const id=user.id;
     // Checking required fields 
     if (!password || !password2) {
         req.flash(
@@ -326,7 +359,6 @@ exports.resetPassword = (req, res) => {
         );
         res.redirect(`/auth/reset/${id}`);
     }
-
     // Checking password length 
     else if (password.length < 8) {
         req.flash(
@@ -335,7 +367,6 @@ exports.resetPassword = (req, res) => {
         );
         res.redirect(`/auth/reset/${id}`);
     }
-
     // Checking password mismatch 
     else if (password != password2) {
         req.flash(
@@ -344,13 +375,12 @@ exports.resetPassword = (req, res) => {
         );
         res.redirect(`/auth/reset/${id}`);
     }
-
     else {
         bcryptjs.genSalt(10, (err, salt) => {
+            // encrypt the password into hash and then save it to database
             bcryptjs.hash(password, salt, (err, hash) => {
                 if (err) throw err;
                 password = hash;
-
                 User.findByIdAndUpdate(
                     { _id: id },
                     { password },
@@ -370,22 +400,12 @@ exports.resetPassword = (req, res) => {
                         }
                     }
                 );
-
             });
         });
     }
 }
 
-// Login Handle 
-exports.loginHandle = (req, res, next) => {
-    passport.authenticate('local', {
-        successRedirect: '/dashboard',
-        failureRedirect: '/auth/login',
-        failureFlash: true
-    })(req, res, next);
-}
-
-// Logout Handle 
+//<------------------------------------------------------------Logout controller---------------------------------------->//
 exports.logoutHandle = (req, res) => {
     req.logout(function(err) {
         if (err) {
@@ -396,4 +416,12 @@ exports.logoutHandle = (req, res) => {
         res.redirect('/auth/login');
       });
     
+}
+
+//<----------------------------------------------------dashboard controllers-------------------------------------------->//
+exports.dashboardPageHandle=async (req,res)=>{
+        const user=await User.findOne({
+            email: req.user.email
+        });
+        res.render('dashboard',{name:user.name,id:user.id});
 }

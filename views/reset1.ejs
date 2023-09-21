@@ -5,9 +5,10 @@
             <div class="form-container">
                 <h1 class="opacity">Reset Password</h1>
                 <%- include ("./messages.ejs") %>
-                <form action="/auth/login" method="POST">
-                    <input type="password" placeholder="Password" />
-                    <input type="password" placeholder="Confirm Password" />
+                <form action="/auth/reset" id="formlink" method="POST">
+                    <input type="email" placeholder="Email" name="email">
+                    <input type="password" placeholder="Password" name="password" />
+                    <input type="password" placeholder="Confirm Password" name="password2" />
                     <button class="opacity">Reset Password</button>
                 </form>
                 <div class="register-forget opacity">

@@ -11,7 +11,7 @@ const connectWithDb = require('./config/key');
 const app = express();
 
 // Passport Configuration
-require('./config/passport')(passport);
+require('./config/passport');
 
 // DB Configuration
 const db = require('./config/key').MongoURI;
@@ -30,7 +30,8 @@ app.use(
     session({
         secret: 'secret',
         resave: true,
-        saveUninitialized: true
+        saveUninitialized: true,
+        maxAge: 30 * 60 * 1000
     })
 );
 
@@ -53,7 +54,7 @@ app.use('/', require('./routes/index'));
 app.use('/auth', require('./routes/auth'));
 
 
-
+// server
 app.listen(PORT || 5000, function(err){
     if (err){
         console.log(`Error in running the server: ${err}`);
