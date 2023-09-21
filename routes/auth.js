@@ -5,19 +5,19 @@ const router = express.Router();
 const authController = require('../controllers/authController')
 
 //------------ Login Route ------------//
-router.get('/login', (req, res) => res.render('login'));
+router.get('/login', (req, res) => res.render('login1'));
 
 //------------ Forgot Password Route ------------//
-router.get('/forgot', (req, res) => res.render('forgot'));
+router.get('/forgot', (req, res) => res.render('forgot1'));
 
 //------------ Reset Password Route ------------//
 router.get('/reset/:id', (req, res) => {
     // console.log(id)
-    res.render('reset', { id: req.params.id })
+    res.render('reset1', { id: req.params.id });
 });
 
 //------------ Register Route ------------//
-router.get('/register', (req, res) => res.render('register'));
+router.get('/register', (req, res) => res.render('register1'));
 
 //------------ Register POST Handle ------------//
 router.post('/register', authController.registerHandle);

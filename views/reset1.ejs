@@ -1,0 +1,21 @@
+<div class="container">>
+    <section class="container">
+        <div class="login-container">
+            <div class="circle circle-one"></div>
+            <div class="form-container">
+                <h1 class="opacity">Reset Password</h1>
+                <%- include ("./messages.ejs") %>
+                <form action="/auth/login" method="POST">
+                    <input type="password" placeholder="Password" />
+                    <input type="password" placeholder="Confirm Password" />
+                    <button class="opacity">Reset Password</button>
+                </form>
+                <div class="register-forget opacity">
+                    <a href="/auth/login">Login</a>
+                </div>
+            </div>
+            <div class="circle circle-two"></div>
+        </div>
+        <div class="theme-btn-container"></div>
+    </section>
+</div>

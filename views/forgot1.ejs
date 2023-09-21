@@ -1,0 +1,22 @@
+<div class="container">
+    <section class="container">
+        <div class="login-container">
+            <div class="circle circle-one"></div>
+            <div class="form-container">
+                <img src="https://raw.githubusercontent.com/hicodersofficial/glassmorphism-login-form/master/assets/illustration.png" alt="illustration" class="illustration" />
+                <h1 class="opacity">Forgot Password</h1>
+                <%- include ("./messages.ejs") %>
+                <form action="/auth/forgot" method="POST">
+                    <input type="email" placeholder="Enter Email" name="email"/>
+                    <button class="opacity">SUBMIT</button>
+                </form>
+                <div class="register-forget opacity">
+                    Remember your password?
+                    <a href="/auth/login">Login</a>
+                </div>
+            </div>
+            <div class="circle circle-two"></div>
+        </div>
+        <div class="theme-btn-container"></div>
+    </section>
+</div>

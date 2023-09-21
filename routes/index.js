@@ -8,7 +8,7 @@ router.get('/', (req, res) => {
 });
 
 //------------ Dashboard Route ------------//
-router.get('/dashboard', ensureAuthenticated, (req, res) => res.render('dash', {
+router.get('/dashboard', ensureAuthenticated, (req, res) => res.render('dashboard', {
     name: req.user.name
 }));
 

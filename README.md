@@ -73,10 +73,3 @@ nodejs-auth <br>
 ├── package-lock.json <br>
 ├── README.md <br>
 └── index.js <br>
-
-# Important Screenshots
-- Homepage: ![image](https://github.com/ujawaltiwariG/NodeJs-Auth/blob/master/assets/homeNodeJSAuth.png?raw=true)
-- Login Page: ![image](https://github.com/ujawaltiwariG/NodeJs-Auth/blob/master/assets/LoginAuth.png?raw=true)
-- Registation Page: ![image](https://github.com/ujawaltiwariG/NodeJs-Auth/blob/master/assets/RegisterAuth.png?raw=true)
-- Forget Password Page: ![image](https://github.com/ujawaltiwariG/NodeJs-Auth/blob/master/assets/forget.png?raw=true)
-- Reset Password Page: ![image](https://github.com/ujawaltiwariG/NodeJs-Auth/blob/master/assets/reset.png?raw=true)

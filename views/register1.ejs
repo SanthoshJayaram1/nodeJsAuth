@@ -1,0 +1,24 @@
+<div class="container">
+    <section class="container">
+        <div class="login-container">
+            <div class="circle circle-one"></div>
+            <div class="form-container">
+                <h1 class="opacity">Register User</h1>
+                <%- include ("./messages.ejs") %>
+                <form action="/auth/register" method="POST">
+                    <input type="text" placeholder="Enter Name" name="name"/>
+                    <input type="email" placeholder="Enter Email" />
+                    <input type="password" placeholder="Enter Password" name="password"/>
+                    <input type="password" placeholder="Confirm Password" name="password2"/>
+                    <button class="opacity">Register</button>
+                </form>
+                <div class="register-forget opacity">
+                    Already Have an account?
+                    <a href="/auth/login">Login</a>
+                </div>
+            </div>
+            <div class="circle circle-two"></div>
+        </div>
+        <div class="theme-btn-container"></div>
+    </section>
+</div>
