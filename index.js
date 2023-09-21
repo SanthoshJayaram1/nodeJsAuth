@@ -10,22 +10,22 @@ const connectWithDb = require('./config/key');
 
 const app = express();
 
-//------------ Passport Configuration ------------//
+// Passport Configuration
 require('./config/passport')(passport);
 
-//------------ DB Configuration ------------//
-// const db = require('./config/key').MongoURI;
+// DB Configuration
+const db = require('./config/key').MongoURI;
 connectWithDb();
 
-//------------ EJS Configuration ------------//
+// EJS Configuration
 app.use(expressLayouts);
 app.use("/assets", express.static('./assets'));
 app.set('view engine', 'ejs');
 
-//------------ Bodyparser Configuration ------------//
+// Bodyparser Configuration
 app.use(express.urlencoded({ extended: false }))
 
-//------------ Express session Configuration ------------//
+// Express session Configuration
 app.use(
     session({
         secret: 'secret',
@@ -34,21 +34,21 @@ app.use(
     })
 );
 
-//------------ Passport Middlewares ------------//
+// Passport Middlewares
 app.use(passport.initialize());
 app.use(passport.session());
 
-//------------ Connecting flash ------------//
+// Connecting flash
 app.use(flash());
 
-//------------ Global variables ------------//
+// Global variables
 app.use(function(req, res, next) {
   res.locals.success_msg = req.flash('success_msg');
   res.locals.error_msg = req.flash('error_msg');
   res.locals.error = req.flash('error');
   next();
 });
-//------------ Routes ------------//
+// Routes
 app.use('/', require('./routes/index'));
 app.use('/auth', require('./routes/auth'));
 

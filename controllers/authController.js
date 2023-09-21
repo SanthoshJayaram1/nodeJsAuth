@@ -7,31 +7,32 @@ const jwt = require('jsonwebtoken');
 const JWT_KEY = "jwtactive987";
 const JWT_RESET_KEY = "jwtreset987";
 
-//------------ User Model ------------//
+// User Model 
 const User = require('../models/User');
 
-//------------ Register Handle ------------//
+// Register Handle 
 exports.registerHandle = (req, res) => {
     const { name, email, password, password2 } = req.body;
     let errors = [];
 
-    //------------ Checking required fields ------------//
+    // Checking required fields 
     if (!name || !email || !password || !password2) {
+        console.log(req.body);
         errors.push({ msg: 'Please enter all fields' });
     }
 
-    //------------ Checking password mismatch ------------//
+    // Checking password mismatch 
     if (password != password2) {
         errors.push({ msg: 'Passwords do not match' });
     }
 
-    //------------ Checking password length ------------//
+    // Checking password length 
     if (password.length < 8) {
         errors.push({ msg: 'Password must be at least 8 characters' });
     }
 
     if (errors.length > 0) {
-        res.render('register', {
+        res.render('register1', {
             errors,
             name,
             email,
@@ -39,12 +40,12 @@ exports.registerHandle = (req, res) => {
             password2
         });
     } else {
-        //------------ Validation passed ------------//
+        // Validation passed 
         User.findOne({ email: email }).then(user => {
             if (user) {
-                //------------ User already exists ------------//
+                // if User already exists 
                 errors.push({ msg: 'Email ID already registered' });
-                res.render('register', {
+                res.render('register1', {
                     errors,
                     name,
                     email,
@@ -52,7 +53,7 @@ exports.registerHandle = (req, res) => {
                     password2
                 });
             } else {
-
+                // if user does'nt exist in database
                 const oauth2Client = new OAuth2(
                     "173872994719-pvsnau5mbj47h0c6ea6ojrl7gjqq1908.apps.googleusercontent.com", // ClientID
                     "OKXIYR14wBB_zumf30EC__iJ", // Client Secret
@@ -118,7 +119,7 @@ exports.registerHandle = (req, res) => {
     }
 }
 
-//------------ Activate Account Handle ------------//
+// Activate Account Handle 
 exports.activateHandle = (req, res) => {
     const token = req.params.token;
     let errors = [];
@@ -135,7 +136,7 @@ exports.activateHandle = (req, res) => {
                 const { name, email, password } = decodedToken;
                 User.findOne({ email: email }).then(user => {
                     if (user) {
-                        //------------ User already exists ------------//
+                        // User already exists 
                         req.flash(
                             'error_msg',
                             'Email ID already registered! Please log in.'
@@ -175,13 +176,13 @@ exports.activateHandle = (req, res) => {
     }
 }
 
-//------------ Forgot Password Handle ------------//
+// Forgot Password Handle 
 exports.forgotPassword = (req, res) => {
     const { email } = req.body;
 
     let errors = [];
 
-    //------------ Checking required fields ------------//
+    // Checking required fields 
     if (!email) {
         errors.push({ msg: 'Please enter an email ID' });
     }
@@ -194,7 +195,7 @@ exports.forgotPassword = (req, res) => {
     } else {
         User.findOne({ email: email }).then(user => {
             if (!user) {
-                //------------ User already exists ------------//
+                // User already exists 
                 errors.push({ msg: 'User with Email ID does not exist!' });
                 res.render('forgot', {
                     errors,
@@ -276,7 +277,7 @@ exports.forgotPassword = (req, res) => {
     }
 }
 
-//------------ Redirect to Reset Handle ------------//
+// Redirect to Reset Handle 
 exports.gotoReset = (req, res) => {
     const { token } = req.params;
 
@@ -317,7 +318,7 @@ exports.resetPassword = (req, res) => {
     const id = req.params.id;
     let errors = [];
 
-    //------------ Checking required fields ------------//
+    // Checking required fields 
     if (!password || !password2) {
         req.flash(
             'error_msg',
@@ -326,7 +327,7 @@ exports.resetPassword = (req, res) => {
         res.redirect(`/auth/reset/${id}`);
     }
 
-    //------------ Checking password length ------------//
+    // Checking password length 
     else if (password.length < 8) {
         req.flash(
             'error_msg',
@@ -335,7 +336,7 @@ exports.resetPassword = (req, res) => {
         res.redirect(`/auth/reset/${id}`);
     }
 
-    //------------ Checking password mismatch ------------//
+    // Checking password mismatch 
     else if (password != password2) {
         req.flash(
             'error_msg',
@@ -375,7 +376,7 @@ exports.resetPassword = (req, res) => {
     }
 }
 
-//------------ Login Handle ------------//
+// Login Handle 
 exports.loginHandle = (req, res, next) => {
     passport.authenticate('local', {
         successRedirect: '/dashboard',
@@ -384,7 +385,7 @@ exports.loginHandle = (req, res, next) => {
     })(req, res, next);
 }
 
-//------------ Logout Handle ------------//
+// Logout Handle 
 exports.logoutHandle = (req, res) => {
     req.logout(function(err) {
         if (err) {
