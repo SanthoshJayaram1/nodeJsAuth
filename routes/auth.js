@@ -31,4 +31,9 @@ router.post('/reset/', authController.resetPassword);//----------------------->2
 // user logout routes
 router.get('/logout', authController.logoutHandle);
 
+// login throught google
+router.get('/google', passport.authenticate('google', {scope: ['profile', 'email']}));
+router.get('/google/callback', passport.authenticate('google', {failureRedirect: '/auth/login'}), (req,res)=>res.redirect('/dashboard'));
+
+
 module.exports = router;

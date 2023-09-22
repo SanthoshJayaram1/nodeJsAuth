@@ -8,7 +8,7 @@ const JWT_KEY = "jwtactive987";
 const JWT_RESET_KEY = "jwtreset987";
 
 // User Model 
-const User = require('../models/User');
+const User = require('../models/User.js');
 
 //<----------------------------------------------------------- Login controllers---------------------------------------------->//
 
@@ -67,17 +67,19 @@ exports.loginHandlePage=async(req,res)=>{
                 });
             } else {
                 // if user does'nt exist in database
+
+                // create Oauth2 client object with clientID and clientSecret
                 const oauth2Client = new OAuth2(
                     "173872994719-pvsnau5mbj47h0c6ea6ojrl7gjqq1908.apps.googleusercontent.com", // ClientID
                     "OKXIYR14wBB_zumf30EC__iJ", // Client Secret
                     "https://developers.google.com/oauthplayground" // Redirect URL
                 );
-
+                // set refresh token to the credentials
                 oauth2Client.setCredentials({
                     refresh_token: "1//04T_nqlj9UVrVCgYIARAAGAQSNwF-L9IrGm-NOdEKBOakzMn1cbbCHgg2ivkad3Q_hMyBkSQen0b5ABfR8kPR18aOoqhRrSlPm9w"
                 });
-                // generate the access token
-                const accessToken = oauth2Client.getAccessToken()
+                // generate the access token 
+                const accessToken = oauth2Client.getAccessToken();
                 
                 const token = jwt.sign({ name, email, password }, JWT_KEY, { expiresIn: '30m' });
                 const CLIENT_URL = 'http://' + req.headers.host;
@@ -232,15 +234,17 @@ exports.forgotPassword = (req, res) => {
                     refresh_token: "1//04T_nqlj9UVrVCgYIARAAGAQSNwF-L9IrGm-NOdEKBOakzMn1cbbCHgg2ivkad3Q_hMyBkSQen0b5ABfR8kPR18aOoqhRrSlPm9w"
                 });
                 const accessToken = oauth2Client.getAccessToken()
-
+                 // generates jwt token 
                 const token = jwt.sign({ _id: user._id }, JWT_RESET_KEY, { expiresIn: '30m' });
                 const CLIENT_URL = 'http://' + req.headers.host;
+                // this is HTML will be sent through mail
                 const output = `
                 <h2>Please click on below link to reset your account password</h2>
                 <p>${CLIENT_URL}/auth/forgot/${token}</p>
                 <p><b>NOTE: </b> The activation link expires in 30 minutes.</p>
                 `;
-
+                 // then after, that link will be update in user document with "resetLink" if it is present in database
+                 // if not present then it will send mail 
                 User.updateOne({ resetLink: token }, (err, success) => {
                     if (err) {
                         errors.push({ msg: 'Error resetting password!' });
@@ -250,6 +254,7 @@ exports.forgotPassword = (req, res) => {
                         });
                     }
                     else {
+                        // nodemailer is used for sending mails
                         const transporter = nodemailer.createTransport({
                             service: 'gmail',
                             auth: {
@@ -261,7 +266,6 @@ exports.forgotPassword = (req, res) => {
                                 accessToken: accessToken
                             },
                         });
-
                         // send mail with defined transport object
                         const mailOptions = {
                             from: '"Auth Admin" <nodejsa@gmail.com>', // sender address
@@ -269,7 +273,7 @@ exports.forgotPassword = (req, res) => {
                             subject: "Account Password Reset: NodeJS Auth ✔", // Subject line
                             html: output, // html body
                         };
-
+                        // this sends the mail
                         transporter.sendMail(mailOptions, (error, info) => {
                             if (error) {
                                 console.log(error);
@@ -277,10 +281,12 @@ exports.forgotPassword = (req, res) => {
                                     'error_msg',
                                     'Something went wrong on our end. Please try again later.'
                                 );
+                                // if there is error it again redirect to forgot password page
                                 res.redirect('/auth/forgot');
                             }
                             else {
                                 console.log('Mail sent : %s', info.response);
+                                // after sending mail it redirects to login page
                                 req.flash(
                                     'success_msg',
                                     'Password reset link sent to email ID. Please follow the instructions.'

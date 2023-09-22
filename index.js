@@ -14,7 +14,6 @@ const app = express();
 require('./config/passport');
 
 // DB Configuration
-const db = require('./config/key').MongoURI;
 connectWithDb();
 
 // EJS Configuration
@@ -38,6 +37,8 @@ app.use(
 // Passport Middlewares
 app.use(passport.initialize());
 app.use(passport.session());
+require('./config/passport-google-oauth2-strategy');
+
 
 // Connecting flash
 app.use(flash());
