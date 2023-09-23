@@ -4,8 +4,9 @@ const nodemailer = require('nodemailer');
 const { google } = require("googleapis");
 const OAuth2 = google.auth.OAuth2;
 const jwt = require('jsonwebtoken');
-const JWT_KEY = "jwtactive987";
-const JWT_RESET_KEY = "jwtreset987";
+// const JWT_KEY = "jwtactive987";
+// const JWT_RESET_KEY = "jwtreset987";
+const {CLIENT_ID,CLIENT_SECRET,REFRESH_TOKEN,JWT_KEY,JWT_RESET_KEY,USER_EMAIL,REDIRECT_URL}=process.env;
 
 // User Model 
 const User = require('../models/User.js');
@@ -70,13 +71,13 @@ exports.loginHandlePage=async(req,res)=>{
 
                 // create Oauth2 client object with clientID and clientSecret
                 const oauth2Client = new OAuth2(
-                    "173872994719-pvsnau5mbj47h0c6ea6ojrl7gjqq1908.apps.googleusercontent.com", // ClientID
-                    "OKXIYR14wBB_zumf30EC__iJ", // Client Secret
-                    "https://developers.google.com/oauthplayground" // Redirect URL
+                    CLIENT_ID, // ClientID
+                    CLIENT_SECRET, // Client Secret
+                    REDIRECT_URL // Redirect URL
                 );
                 // set refresh token to the credentials
                 oauth2Client.setCredentials({
-                    refresh_token: "1//04T_nqlj9UVrVCgYIARAAGAQSNwF-L9IrGm-NOdEKBOakzMn1cbbCHgg2ivkad3Q_hMyBkSQen0b5ABfR8kPR18aOoqhRrSlPm9w"
+                    refresh_token: REFRESH_TOKEN,
                 });
                 // generate the access token 
                 const accessToken = oauth2Client.getAccessToken();
@@ -94,17 +95,17 @@ exports.loginHandlePage=async(req,res)=>{
                     service: 'gmail',
                     auth: {
                         type: "OAuth2",
-                        user: "nodejsa@gmail.com",
-                        clientId: "173872994719-pvsnau5mbj47h0c6ea6ojrl7gjqq1908.apps.googleusercontent.com",
-                        clientSecret: "OKXIYR14wBB_zumf30EC__iJ",
-                        refreshToken: "1//04T_nqlj9UVrVCgYIARAAGAQSNwF-L9IrGm-NOdEKBOakzMn1cbbCHgg2ivkad3Q_hMyBkSQen0b5ABfR8kPR18aOoqhRrSlPm9w",
+                        user: USER_EMAIL,
+                        clientId: CLIENT_ID,
+                        clientSecret: CLIENT_SECRET,
+                        refreshToken: REFRESH_TOKEN,
                         accessToken: accessToken
                     },
                 });
 
                 // send mail with defined transport object
                 const mailOptions = {
-                    from: '"Auth Admin" <nodejsa@gmail.com>', // sender address
+                    from: `"Auth Admin" ${USER_EMAIL}`, // sender address
                     to: email, // list of receivers
                     subject: "Account Verification: NodeJS Auth ✔", // Subject line
                     generateTextFromHTML: true,
@@ -225,13 +226,13 @@ exports.forgotPassword = (req, res) => {
             } else {
 
                 const oauth2Client = new OAuth2(
-                    "173872994719-pvsnau5mbj47h0c6ea6ojrl7gjqq1908.apps.googleusercontent.com", // ClientID
-                    "OKXIYR14wBB_zumf30EC__iJ", // Client Secret
-                    "https://developers.google.com/oauthplayground" // Redirect URL
+                    CLIENT_ID, // ClientID
+                    CLIENT_SECRET, // Client Secret
+                    REDIRECT_URL // Redirect URL
                 );
 
                 oauth2Client.setCredentials({
-                    refresh_token: "1//04T_nqlj9UVrVCgYIARAAGAQSNwF-L9IrGm-NOdEKBOakzMn1cbbCHgg2ivkad3Q_hMyBkSQen0b5ABfR8kPR18aOoqhRrSlPm9w"
+                    refresh_token: REFRESH_TOKEN,
                 });
                 const accessToken = oauth2Client.getAccessToken()
                  // generates jwt token 
@@ -259,16 +260,16 @@ exports.forgotPassword = (req, res) => {
                             service: 'gmail',
                             auth: {
                                 type: "OAuth2",
-                                user: "nodejsa@gmail.com",
-                                clientId: "173872994719-pvsnau5mbj47h0c6ea6ojrl7gjqq1908.apps.googleusercontent.com",
-                                clientSecret: "OKXIYR14wBB_zumf30EC__iJ",
-                                refreshToken: "1//04T_nqlj9UVrVCgYIARAAGAQSNwF-L9IrGm-NOdEKBOakzMn1cbbCHgg2ivkad3Q_hMyBkSQen0b5ABfR8kPR18aOoqhRrSlPm9w",
+                                user: USER_EMAIL,
+                                clientId: CLIENT_ID,
+                                clientSecret: CLIENT_SECRET,
+                                refreshToken: REFRESH_TOKEN,
                                 accessToken: accessToken
                             },
                         });
                         // send mail with defined transport object
                         const mailOptions = {
-                            from: '"Auth Admin" <nodejsa@gmail.com>', // sender address
+                            from: `"Auth Admin"${USER_EMAIL}`, // sender address
                             to: email, // list of receivers
                             subject: "Account Password Reset: NodeJS Auth ✔", // Subject line
                             html: output, // html body

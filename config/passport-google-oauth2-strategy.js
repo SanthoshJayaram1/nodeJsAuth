@@ -4,11 +4,13 @@ const crypto = require('crypto');
 const User=require('../models/User');
 
 
+const {CLIENT_ID,CLIENT_SECRET,CALLBACK_URL}=process.env;
+
 // tell passport to use a new strategy for google login
 passport.use(new googleStrategy({
-        clientID: "297963479359-vnef8e18o6s6sq0dq7l9925sbqcij2d1.apps.googleusercontent.com",
-        clientSecret: "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",
-        callbackURL: "https://nodejsoauth.onrender.com/auth/google/callback"
+        clientID: CLIENT_ID,
+        clientSecret: CLIENT_SECRET,
+        callbackURL: CALLBACK_URL
     },
     function(accessToken, refreshToken, profile, done){
         // find a user
