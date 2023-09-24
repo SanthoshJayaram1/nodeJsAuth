@@ -3,8 +3,7 @@ A complete NodeJS + Express + PassportJS + JWT authentication app:
 
 # Important links
 
-- Hosting Link: 
-- Explaination Link: 
+- Hosting Link: https://nodejsoauth.onrender.com/
 
 # Tech stack
 - express: it is managing the frontend of this App
@@ -27,7 +26,7 @@ A complete NodeJS + Express + PassportJS + JWT authentication app:
 
 ##### Into the project directory
 
-`cd nodejs-auth`
+`cd nodejsAuth`
 
 ##### Installing NPM dependencies
 
@@ -37,7 +36,7 @@ A complete NodeJS + Express + PassportJS + JWT authentication app:
 
 `npm start`
 
-#### The Server should now be running at http://localhost:3005/
+#### The Server should now be running at http://localhost:3000/
 
 ## Folder Structure
 
